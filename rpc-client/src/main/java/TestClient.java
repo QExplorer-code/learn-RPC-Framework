@@ -1,7 +1,7 @@
 import rpc.api.CalculateService;
 import rpc.api.HelloObject;
 import rpc.api.HelloService;
-import rpc.client.RpcClientProxy;
+import rpc.common.RpcClientProxy;
 
 import java.util.Scanner;
 
@@ -25,7 +25,7 @@ public class TestClient {
                     break;
                 case 2:
                     CalculateService calculateService2 = rpcClientProxy.getProxy(CalculateService.class);
-                    int  tempRes2 = calculateService2.sub(1, 2);
+                    int tempRes2 = calculateService2.sub(1, 2);
                     System.out.println(tempRes2);
                     break;
                 default:

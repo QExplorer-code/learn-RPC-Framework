@@ -3,7 +3,7 @@ package test;
 import rpc.api.CalculateService;
 import rpc.api.HelloService;
 import rpc.registry.DefaultServiceRegistry;
-import rpc.server.RpcServer;
+import rpc.socket.server.SocketServer;
 
 public class TestServer {
     public static void main(String[] args) {
@@ -14,7 +14,7 @@ public class TestServer {
         CalculateService calculateService = new CalculateServiceImpl();
         serviceRegistry.register(calculateService);
 
-        RpcServer rpcServer = new RpcServer(serviceRegistry);
-        rpcServer.start(9999);
+        SocketServer socketServer = new SocketServer(serviceRegistry);
+        socketServer.start(9999);
     }
 }

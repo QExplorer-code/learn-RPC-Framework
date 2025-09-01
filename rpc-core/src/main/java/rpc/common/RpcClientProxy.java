@@ -1,5 +1,6 @@
-package rpc.client;
+package rpc.common;
 
+import rpc.socket.client.SocketClient;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
 
@@ -29,7 +30,7 @@ public class RpcClientProxy implements InvocationHandler {
                 .parameters(args)
                 .parameterTypes(method.getParameterTypes())
                 .build();
-        RpcClient rpcClient = new RpcClient();
-        return ((RpcResponse) rpcClient.sendRequest(rpcRequest, host, port)).getData();
+        SocketClient socketClient = new SocketClient(host, port);
+        return ((RpcResponse) socketClient.sendRequest(rpcRequest)).getData();
     }
 }

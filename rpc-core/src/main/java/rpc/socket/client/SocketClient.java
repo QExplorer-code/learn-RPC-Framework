@@ -1,19 +1,30 @@
-package rpc.client;
+package rpc.socket.client;
+
+import rpc.common.RpcClient;
+import rpc.entity.RpcRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rpc.entity.RpcRequest;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class RpcClient {
+public class SocketClient implements RpcClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);
 
-    public Object sendRequest(RpcRequest rpcRequest, String host, int port) {
-        try (Socket socket = new Socket(host, port);) {
+    private final String host;
+    private final int port;
+
+    public SocketClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    @Override
+    public Object sendRequest(RpcRequest rpcRequest) {
+        try (Socket socket = new Socket(host, port)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream objectInputStream = new ObjectInputStream((socket.getInputStream()));
             objectOutputStream.writeObject(rpcRequest);
@@ -24,5 +35,4 @@ public class RpcClient {
             return null;
         }
     }
-
 }
