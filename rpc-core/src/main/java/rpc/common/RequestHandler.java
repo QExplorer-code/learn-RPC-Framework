@@ -14,8 +14,6 @@ public class RequestHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private final DefaultServiceRegistry defaultServiceRegistry = new DefaultServiceRegistry();
-
     public Object handle(RpcRequest rpcRequest, Object service) {
         Object result = null;
         try {

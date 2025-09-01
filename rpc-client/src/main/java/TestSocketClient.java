@@ -5,28 +5,29 @@ import rpc.common.RpcClientProxy;
 
 import java.util.Scanner;
 
-public class TestClient {
+public class TestSocketClient {
     public static void main(String[] args) {
+        // 代理（连接服务端）
         RpcClientProxy rpcClientProxy = new RpcClientProxy("127.0.0.1", 9999);
-        HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
-        HelloObject helloObject = new HelloObject(111, "this is a test");
-        String result = helloService.hello(helloObject);
-        System.out.println(result);
 
-        System.out.println("1: add, 2: sub, -1: exit");
+        // 服务调用
+        System.out.println("0: hello, 1: add, 2: sub, -1: exit");
         Scanner scanner =  new Scanner(System.in);
         int flag = scanner.nextInt();
         while (flag != -1) {
             switch (flag) {
+                case 0:
+                    HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
+                    HelloObject helloObject = new HelloObject(111, "this is a test");
+                    System.out.println(helloService.hello(helloObject));
+                    break;
                 case 1:
                     CalculateService calculateService = rpcClientProxy.getProxy(CalculateService.class);
-                    int tempRes = calculateService.add(1, 2);
-                    System.out.println(tempRes);
+                    System.out.println(calculateService.add(1, 2));
                     break;
                 case 2:
                     CalculateService calculateService2 = rpcClientProxy.getProxy(CalculateService.class);
-                    int tempRes2 = calculateService2.sub(1, 2);
-                    System.out.println(tempRes2);
+                    System.out.println(calculateService2.sub(1, 2));
                     break;
                 default:
                     break;
@@ -34,6 +35,5 @@ public class TestClient {
             flag = scanner.nextInt();
         }
         System.out.println("exit...");
-
     }
 }

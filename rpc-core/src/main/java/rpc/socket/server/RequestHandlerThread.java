@@ -3,6 +3,7 @@ package rpc.socket.server;
 import rpc.common.RequestHandler;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
+import rpc.registry.DefaultServiceRegistry;
 import rpc.registry.ServiceRegistry;
 
 import org.slf4j.Logger;
@@ -16,14 +17,17 @@ import java.net.Socket;
 public class RequestHandlerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
-    private Socket socket;
-    private ServiceRegistry serviceRegistry;
-    private RequestHandler requestHandler;
+    private final Socket socket;
+    private static final ServiceRegistry serviceRegistry;
+    private static final RequestHandler requestHandler;
 
-    public RequestHandlerThread(Socket socket, ServiceRegistry serviceRegistry, RequestHandler requestHandler) {
+    static {
+        serviceRegistry = new DefaultServiceRegistry();
+        requestHandler = new RequestHandler();
+    }
+
+    public RequestHandlerThread(Socket socket) {
         this.socket = socket;
-        this.serviceRegistry = serviceRegistry;
-        this.requestHandler = requestHandler;
     }
 
     @Override
