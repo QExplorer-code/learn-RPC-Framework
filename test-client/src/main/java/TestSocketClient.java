@@ -2,13 +2,15 @@ import rpc.api.CalculateService;
 import rpc.api.HelloObject;
 import rpc.api.HelloService;
 import rpc.common.RpcClientProxy;
+import rpc.socket.client.SocketClient;
 
 import java.util.Scanner;
 
 public class TestSocketClient {
     public static void main(String[] args) {
         // 代理（连接服务端）
-        RpcClientProxy rpcClientProxy = new RpcClientProxy("127.0.0.1", 9999);
+        SocketClient socketClient = new SocketClient("127.0.0.1", 9999);
+        RpcClientProxy rpcClientProxy = new RpcClientProxy(socketClient);
 
         // 服务调用
         System.out.println("0: hello, 1: add, 2: sub, -1: exit");
