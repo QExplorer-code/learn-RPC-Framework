@@ -9,9 +9,13 @@ import io.netty.util.AttributeKey;
 import org.omg.PortableInterceptor.HOLDING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.codec.CommonDecoder;
+import rpc.codec.CommonEncoder;
 import rpc.common.RpcClient;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
+import rpc.netty.server.NettyServerHandler;
+import rpc.serializer.JsonSerializer;
 
 public class NettyClient implements RpcClient {
 
@@ -38,8 +42,10 @@ public class NettyClient implements RpcClient {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
-//                        添加处理器
-//                        pipeline.addLast();
+//                        添加处理器：入站顺序，出战逆序
+                        pipeline.addLast(new CommonEncoder(new JsonSerializer()));
+                        pipeline.addLast(new CommonDecoder());
+                        pipeline.addLast(new NettyClientHandler());
                     }
                 });
     }
