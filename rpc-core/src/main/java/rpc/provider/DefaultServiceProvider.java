@@ -1,4 +1,4 @@
-package rpc.registry;
+package rpc.provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,15 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultServiceRegistry implements ServiceRegistry {
+public class DefaultServiceProvider implements ServiceProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceProvider.class);
 
     private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
     private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
 
     @Override
-    public synchronized  <T> void register(T service) {
+    public synchronized  <T> void addServiceProvider(T service) {
         String serviceName = service.getClass().getCanonicalName();
         if (registeredService.contains(serviceName)) {
             logger.warn("服务 {} 已经注册过", serviceName);
@@ -38,7 +38,7 @@ public class DefaultServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public Object getService(String serviceName) {
+    public Object getServiceProvider(String serviceName) {
         Object service = serviceMap.get(serviceName);
         if (service == null) {
             throw new RpcException(RpcError.SERVICE_NOT_FOUND);

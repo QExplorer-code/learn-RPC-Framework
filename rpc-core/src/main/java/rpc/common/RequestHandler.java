@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
 import rpc.enumeration.ResponseCode;
-import rpc.registry.DefaultServiceRegistry;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -2,19 +2,19 @@ package test;
 
 import rpc.api.CalculateService;
 import rpc.api.HelloService;
-import rpc.registry.DefaultServiceRegistry;
+import rpc.provider.DefaultServiceProvider;
 import rpc.socket.server.SocketServer;
 
 public class TestSocketServer {
     public static void main(String[] args) {
-        DefaultServiceRegistry serviceRegistry = new DefaultServiceRegistry();
+        DefaultServiceProvider serviceRegistry = new DefaultServiceProvider();
 
-        // 服务注册
+        // 服务提供
         HelloService helloService = new HelloServiceImpl();
-        serviceRegistry.register(helloService);
+        serviceRegistry.addServiceProvider(helloService);
 
         CalculateService calculateService = new CalculateServiceImpl();
-        serviceRegistry.register(calculateService);
+        serviceRegistry.addServiceProvider(calculateService);
 
         // 服务启动
         SocketServer socketServer = new SocketServer();

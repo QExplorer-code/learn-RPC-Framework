@@ -3,8 +3,8 @@ package rpc.socket.server;
 import rpc.common.RequestHandler;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
-import rpc.registry.DefaultServiceRegistry;
-import rpc.registry.ServiceRegistry;
+import rpc.provider.DefaultServiceProvider;
+import rpc.provider.ServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +18,11 @@ public class RequestHandlerThread implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
     private final Socket socket;
-    private static final ServiceRegistry serviceRegistry;
+    private static final ServiceProvider serviceProvider;
     private static final RequestHandler requestHandler;
 
     static {
-        serviceRegistry = new DefaultServiceRegistry();
+        serviceProvider = new DefaultServiceProvider();
         requestHandler = new RequestHandler();
     }
 
@@ -36,7 +36,7 @@ public class RequestHandlerThread implements Runnable {
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream())){
             RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
             String interfaceName = rpcRequest.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
+            Object service = serviceProvider.getServiceProvider(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);
             objectOutputStream.writeObject(RpcResponse.success(result));
             objectOutputStream.flush();
