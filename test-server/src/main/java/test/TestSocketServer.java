@@ -7,17 +7,14 @@ import rpc.socket.server.SocketServer;
 
 public class TestSocketServer {
     public static void main(String[] args) {
-        DefaultServiceProvider serviceRegistry = new DefaultServiceProvider();
-
         // 服务提供
         HelloService helloService = new HelloServiceImpl();
-        serviceRegistry.addServiceProvider(helloService);
-
         CalculateService calculateService = new CalculateServiceImpl();
-        serviceRegistry.addServiceProvider(calculateService);
 
         // 服务启动
-        SocketServer socketServer = new SocketServer();
-        socketServer.start(9999);
+        SocketServer socketServer = new SocketServer("127.0.0.1", 9999);
+        socketServer.publishService(helloService, HelloService.class);
+        socketServer.publishService(calculateService, CalculateService.class);
+        socketServer.start();
     }
 }

@@ -7,14 +7,13 @@ import rpc.provider.ServiceProvider;
 
 public class TestNettyServer {
     public static void main(String[] args) {
-        ServiceProvider registry = new DefaultServiceProvider();
+
+        // 服务启动
+        NettyServer nettyServer = new NettyServer("127.0.0.1", 9999);
 
         // 服务提供
         HelloService helloService = new HelloServiceImpl();
-        registry.addServiceProvider(helloService);
-
-        // 服务启动
-        NettyServer server = new NettyServer();
-        server.start(9998);
+        nettyServer.publishService(helloService, HelloService.class);
+        nettyServer.start();
     }
 }

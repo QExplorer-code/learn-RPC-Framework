@@ -12,15 +12,33 @@ import org.slf4j.LoggerFactory;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
 import rpc.common.RpcServer;
+import rpc.provider.DefaultServiceProvider;
+import rpc.provider.ServiceProvider;
+import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceRegistry;
 import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
+
+import java.net.InetSocketAddress;
 
 public class NettyServer implements RpcServer {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
+    private final String host;
+    private final int port;
+    private final ServiceRegistry serviceRegistry;
+    private final ServiceProvider serviceProvider;
+
+    public NettyServer(String host, int port) {
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new NacosServiceRegistry();
+        serviceProvider = new DefaultServiceProvider();
+    }
+
     @Override
-    public void start(int port) {
+    public void start() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -44,7 +62,7 @@ public class NettyServer implements RpcServer {
                             pipeline.addLast(new NettyServerHandler());
                         }
                     });
-            ChannelFuture future = serverBootstrap.bind(port).sync();
+            ChannelFuture future = serverBootstrap.bind(host, port).sync();
             future.channel().closeFuture().sync();
         } catch (Exception e) {
             logger.error("启动服务器时出现错误：", e);
@@ -52,5 +70,11 @@ public class NettyServer implements RpcServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public <T> void publishService(Object service, Class<T> serviceClass) {
+        serviceProvider.addServiceProvider(service);
+        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
     }
 }
