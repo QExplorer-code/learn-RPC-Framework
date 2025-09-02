@@ -7,7 +7,7 @@ import rpc.netty.client.NettyClient;
 public class TestNettyClient {
     public static void main(String[] args) {
         // 代理（连接服务端）
-        RpcClient nettyClient = new NettyClient("127.0.0.1", 9998);
+        RpcClient nettyClient = new NettyClient();
         RpcClientProxy rpcClientProxy = new RpcClientProxy(nettyClient);
 
         // 服务调用

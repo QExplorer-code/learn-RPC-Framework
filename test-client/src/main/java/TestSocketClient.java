@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class TestSocketClient {
     public static void main(String[] args) {
         // 代理（连接服务端）
-        SocketClient socketClient = new SocketClient("127.0.0.1", 9999);
+        SocketClient socketClient = new SocketClient();
         RpcClientProxy rpcClientProxy = new RpcClientProxy(socketClient);
 
         // 服务调用

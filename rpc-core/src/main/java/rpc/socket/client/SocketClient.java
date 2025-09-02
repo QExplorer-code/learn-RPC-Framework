@@ -9,25 +9,30 @@ import rpc.entity.RpcResponse;
 import rpc.enumeration.ResponseCode;
 import rpc.enumeration.RpcError;
 import rpc.exception.RpcException;
+import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceRegistry;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class SocketClient implements RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);
 
-    private final String host;
-    private final int port;
+    private final ServiceRegistry serviceRegistry;
 
-    public SocketClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public SocketClient() {
+        serviceRegistry = new NacosServiceRegistry();
     }
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
+        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        String host =  inetSocketAddress.getAddress().getHostAddress();
+        int port = inetSocketAddress.getPort();
+
         try (Socket socket = new Socket(host, port)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream objectInputStream = new ObjectInputStream((socket.getInputStream()));

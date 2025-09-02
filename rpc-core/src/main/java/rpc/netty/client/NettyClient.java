@@ -15,21 +15,23 @@ import rpc.common.RpcClient;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
 import rpc.netty.server.NettyServerHandler;
+import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceRegistry;
 import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
+
+import java.net.InetSocketAddress;
 
 public class NettyClient implements RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
-    private String host;
-    private int port;
+    private ServiceRegistry serviceRegistry;
 
     private static final Bootstrap bootstrap;
 
-    public NettyClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public NettyClient() {
+        this.serviceRegistry = new NacosServiceRegistry();
     }
 
     static {
@@ -55,6 +57,10 @@ public class NettyClient implements RpcClient {
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
         try {
+            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            String host = inetSocketAddress.getAddress().getHostAddress();
+            int port = inetSocketAddress.getPort();
+
             ChannelFuture future = bootstrap.connect(host, port).sync();
             logger.info("连接到服务器{}：{}", host, port);
             Channel channel = future.channel();
