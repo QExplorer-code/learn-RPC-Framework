@@ -16,6 +16,7 @@ import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
 import rpc.netty.server.NettyServerHandler;
 import rpc.serializer.JsonSerializer;
+import rpc.serializer.KryoSerializer;
 
 public class NettyClient implements RpcClient {
 
@@ -43,7 +44,8 @@ public class NettyClient implements RpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
 //                        添加处理器：入站顺序，出战逆序
-                        pipeline.addLast(new CommonEncoder(new JsonSerializer()));
+//                        pipeline.addLast(new CommonEncoder(new JsonSerializer()));
+                        pipeline.addLast(new CommonEncoder(new KryoSerializer()));
                         pipeline.addLast(new CommonDecoder());
                         pipeline.addLast(new NettyClientHandler());
                     }
