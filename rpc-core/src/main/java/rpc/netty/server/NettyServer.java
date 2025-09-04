@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
 import rpc.common.RpcServer;
+import rpc.loadbalancer.RandomLoadBalancer;
 import rpc.provider.DefaultServiceProvider;
 import rpc.provider.ServiceProvider;
 import rpc.registry.NacosServiceRegistry;
@@ -33,7 +34,8 @@ public class NettyServer implements RpcServer {
     public NettyServer(String host, int port) {
         this.host = host;
         this.port = port;
-        serviceRegistry = new NacosServiceRegistry();
+        // TODO 服务端先传个默认值，后续服务注册与发现重构
+        serviceRegistry = new NacosServiceRegistry(new RandomLoadBalancer());
         serviceProvider = new DefaultServiceProvider();
     }
 

@@ -14,6 +14,8 @@ import rpc.codec.CommonEncoder;
 import rpc.common.RpcClient;
 import rpc.entity.RpcRequest;
 import rpc.entity.RpcResponse;
+import rpc.loadbalancer.LoadBalancer;
+import rpc.loadbalancer.RandomLoadBalancer;
 import rpc.netty.server.NettyServerHandler;
 import rpc.registry.NacosServiceRegistry;
 import rpc.registry.ServiceRegistry;
@@ -31,7 +33,11 @@ public class NettyClient implements RpcClient {
     private static final Bootstrap bootstrap;
 
     public NettyClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this(new RandomLoadBalancer());
+    }
+
+    public NettyClient(LoadBalancer loadBalancer) {
+        this.serviceRegistry = new NacosServiceRegistry(loadBalancer);
     }
 
     static {
@@ -58,6 +64,8 @@ public class NettyClient implements RpcClient {
     public Object sendRequest(RpcRequest rpcRequest) {
         try {
             InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            // TODO 考虑无服务可用
+
             String host = inetSocketAddress.getAddress().getHostAddress();
             int port = inetSocketAddress.getPort();
 

@@ -2,6 +2,7 @@ import rpc.api.CalculateService;
 import rpc.api.HelloObject;
 import rpc.api.HelloService;
 import rpc.common.RpcClientProxy;
+import rpc.loadbalancer.RoundRobinLoadBalancer;
 import rpc.socket.client.SocketClient;
 
 import java.util.Scanner;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 public class TestSocketClient {
     public static void main(String[] args) {
         // 代理（连接服务端）
-        SocketClient socketClient = new SocketClient();
+        SocketClient socketClient = new SocketClient(new RoundRobinLoadBalancer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(socketClient);
 
         // 服务调用

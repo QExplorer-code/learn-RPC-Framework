@@ -4,6 +4,7 @@ import rpc.common.RpcServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.loadbalancer.RandomLoadBalancer;
 import rpc.provider.DefaultServiceProvider;
 import rpc.provider.ServiceProvider;
 import rpc.registry.NacosServiceRegistry;
@@ -33,7 +34,8 @@ public class SocketServer implements RpcServer {
     public SocketServer(String host, int port) {
         this.host = host;
         this.port = port;
-        serviceRegistry = new NacosServiceRegistry();
+        // TODO 服务端传入默认值，后续服务注册与发现重构
+        serviceRegistry = new NacosServiceRegistry(new RandomLoadBalancer());
         serviceProvider = new DefaultServiceProvider();
 
         BlockingQueue<Runnable> workingQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_CAPACITY);

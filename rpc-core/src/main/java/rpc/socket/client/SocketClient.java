@@ -9,6 +9,8 @@ import rpc.entity.RpcResponse;
 import rpc.enumeration.ResponseCode;
 import rpc.enumeration.RpcError;
 import rpc.exception.RpcException;
+import rpc.loadbalancer.LoadBalancer;
+import rpc.loadbalancer.RandomLoadBalancer;
 import rpc.registry.NacosServiceRegistry;
 import rpc.registry.ServiceRegistry;
 
@@ -24,12 +26,18 @@ public class SocketClient implements RpcClient {
     private final ServiceRegistry serviceRegistry;
 
     public SocketClient() {
-        serviceRegistry = new NacosServiceRegistry();
+        this(new RandomLoadBalancer());
+    }
+
+    public SocketClient(LoadBalancer loadBalancer) {
+        serviceRegistry = new NacosServiceRegistry(loadBalancer);
     }
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest) {
         InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        // TODO 考虑无服务可用
+
         String host =  inetSocketAddress.getAddress().getHostAddress();
         int port = inetSocketAddress.getPort();
 
